@@ -5,7 +5,6 @@ const Box = () => {
   const myMesh = React.useRef<any>();
 
   const onKeyDownHandler = (e: any) => {
-    console.log(e.key);
     switch (e.key) {
       case "ArrowLeft": {
         myMesh.current.position.x -= 1;
@@ -25,7 +24,7 @@ const Box = () => {
         break;
       }
       default:
-        console.log("asdf?");
+        break;
     }
   };
 
@@ -53,7 +52,7 @@ const Box = () => {
   );
 };
 
-const AirPlain = () => {
+const BoxMove1 = () => {
   return (
     <div id="world">
       <Canvas>
@@ -75,4 +74,4 @@ const AirPlain = () => {
     </div>
   );
 };
-export default AirPlain;
+export default BoxMove1;

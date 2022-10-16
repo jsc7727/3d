@@ -11,10 +11,6 @@ const Box = () => {
     ArrowDown: false,
   });
 
-  useEffect(() => {
-    console.log(keyPress);
-  }, [keyPress]);
-
   const onKeyDownHandler = (e: any) => {
     type keyTypes = keyof typeof keyPress;
     if (keyPress.hasOwnProperty(e.key)) {
@@ -42,7 +38,6 @@ const Box = () => {
 
   useFrame(({ clock }, delta) => {
     const speed = 5;
-    console.log("delta", delta);
     if (myMesh.current) {
       for (let [key, value] of Object.entries(keyPress))
         if (value === false) continue;
@@ -97,7 +92,7 @@ const Box = () => {
   );
 };
 
-const AirPlain = () => {
+const BoxMove2 = () => {
   return (
     <div id="world">
       <Canvas>
@@ -119,4 +114,4 @@ const AirPlain = () => {
     </div>
   );
 };
-export default AirPlain;
+export default BoxMove2;
