@@ -1,5 +1,5 @@
 import { Physics } from "@react-three/cannon";
-import { Sky } from "@react-three/drei";
+import { Box, Sky } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Ground from "./../components/MineCraft/Ground";
 import Player from "./../components/MineCraft/Player";
@@ -8,6 +8,7 @@ import FPV from "./../components/MineCraft/FPV";
 import Cubes from "./../components/MineCraft/Cubes";
 import TextureSelector from "./../components/MineCraft/TextureSelector";
 import Menu from "./../components/MineCraft/Menu";
+import Player2 from "../components/MineCraft/Player2";
 
 function MineCraft() {
   return (
@@ -17,7 +18,9 @@ function MineCraft() {
         <ambientLight intensity={0.5} />
         <FPV />
         <Physics>
+          {/* <Player2 /> */}
           <Player />
+          <Player2 />
           <Cubes />
           <Ground />
         </Physics>

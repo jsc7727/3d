@@ -131,7 +131,7 @@ const Player = () => {
 
     direction
       .subVectors(frontVector, sideVector)
-      .normalize() // 1로 
+      .normalize() // 1로
       .multiplyScalar(SPEED) // 속도만큼 스칼라 증가
       .applyEuler(camera.rotation); // 카메라가 보는 방향으로 방향 설정 => 스칼라를 벡터로 만듬
     // .applyEuler(); // 카메라가 보는 방향으로 방향 설정 => 스칼라를 벡터로 만듬
