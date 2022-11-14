@@ -18,7 +18,6 @@ const Player = () => {
   const group = useRef<any>();
   const current = useRef("Idle");
   const { nodes, materials, animations }: any = useGLTF(Soldier);
-  const model = nodes.Character;
   const { actions } = useAnimations(animations, group);
 
   const [ref, api] = useSphere(() => ({
@@ -27,37 +26,23 @@ const Player = () => {
     position: [0, 10, 0],
   }));
 
-  const ref2 = useRef<any>();
-
   // vel 을 구독해서 vel 값이 바뀌면 솔저랑 매칭됨.
   const vel = useRef([0, 0, 0]);
+
   useEffect(() => {
     api.velocity.subscribe((v) => {
-      console.log(v);
+      api.rotation.set(0, 0, 0);
       return (vel.current = [0, v[1], 0]);
     });
-  }, [api.velocity]);
+  }, [api.velocity, api.rotation]);
 
   const pos = useRef([0, 0, 0]);
   useEffect(() => {
-    api.position.subscribe((p) => (pos.current = p));
-  }, [api.position]);
-
-  // const qua = useRef([0, 0, 0]);
-  // useEffect(() => {
-  //   api.quaternion.subscribe((q) => (qua.current = q));
-  // }, [api.quaternion]);
-
-  // const rot = useRef([0, 0, 0]);
-  // useEffect(() => {
-  //   api.rotation.subscribe((r) => {
-  //     console.log("rotation", r);
-  //     return (rot.current = [0, 0, 0]);
-  //   });
-  // }, [api.rotation]);
-
-  const rotateQuaternion = useRef(new Quaternion());
-  const rotateAngle = useRef(new Vector3(0, 1, 0));
+    api.position.subscribe((p) => {
+      api.rotation.set(0, 0, 0);
+      return (pos.current = p);
+    });
+  }, [api.position, api.rotation]);
 
   const solderAnimation = () => {
     let currentAction: AnimationAction | null = null;
@@ -96,41 +81,19 @@ const Player = () => {
     }
 
     if (current.current === "Walk") {
-      // 3D 모델과 관련된 Data 들은  group에 있음
-      // const angleYCameraDirection = Math.atan2(
-      //   camera.position.x - group.current.position.x,
-      //   camera.position.z - group.current.position.z
-      // );
-      // const directionOffset = camera.rotation;
-      // rotateQuaternion.current.setFromAxisAngle(
-      //   rotateAngle.current,
-      //   angleYCameraDirection + directionOffset
-      // );
-      // group.current.rotation = camera.rotation;
-      // console.log("rotation", group.current.rotation);
-      // console.log("camera", camera.rotation);
-      // ?????
-      // group.current.quaternion.rotateTowards(rotateQuaternion.current, 0.2);
-      // const walkDirection = new Vector3();
-      // camera.getWorldDirection(walkDirection);
-      // walkDirection.y = 0;
-      // walkDirection.normalize();
-      // walkDirection.applyAxisAngle(rotateAngle.current, directionOffset);
-      // const velocity = 0.05;
-      // const moveX = walkDirection.x * velocity;
-      // const moveZ = walkDirection.z * velocity;
-      // group.current.position.x += moveX;
-      // group.current.position.z += moveZ;
-      // pos.current = [
-      //   group.current.position.x,
-      //   group.current.position.y,
-      //   group.current.position.z,
-      // ];
     }
   };
 
   useFrame(() => {
-    const v = new Vector3(pos.current[0], pos.current[1] + 5, pos.current[2]);
+    const v = new Vector3(pos.current[0], pos.current[1], pos.current[2]);
+
+    const res = new Vector3(0, -6, -10).applyEuler(camera.rotation);
+
+    // Vector3.subVectors(v, res);
+    v.x -= res.x;
+    v.y -= res.y;
+    v.z -= res.z;
+
     camera.position.copy(v);
     const direction = new Vector3();
 
@@ -151,52 +114,32 @@ const Player = () => {
       .normalize() // 1로
       .multiplyScalar(SPEED) // 속도만큼 스칼라 증가
       .applyEuler(camera.rotation); // 카메라가 보는 방향으로 방향 설정 => 스칼라를 벡터로 만듬
+    // .applyEuler(camera.rotation); // 카메라가 보는 방향으로 방향 설정 => 스칼라를 벡터로 만듬
     // .applyEuler(); // 카메라가 보는 방향으로 방향 설정 => 스칼라를 벡터로 만듬
 
     //오일러
     // - 짐벌락 현상이 일어남 => x y z 축을 각각 따로 체크하여 각도를 구하는데 회전하다가 두개의 축이 겹치는 경우 계산이 불가능함
     // 퀀터니언
     api.velocity.set(direction.x, vel.current[1], direction.z);
-    // api.velocity.set(
-    //   frontVector.x + sideVector.x,
-    //   vel.current[1],
-    //   frontVector.z + sideVector.z
-    // );
     solderAnimation();
-    // group.current.quaternion.rotateTowards(rotateQuaternion.current, 0);
-    // group.current.rotation.set(0, camera.rotation.z, 0);
+
+    group.current.rotation.set(
+      camera.rotation.x,
+      camera.rotation.y,
+      camera.rotation.z
+    );
 
     if (jump && Math.abs(vel.current[1]) < 0.05) {
       api.velocity.set(vel.current[0], JUMP_FORCE, vel.current[2]);
     }
-    // ref.rotation.x = -Math.PI / 2;
-    if (ref.current !== null) {
-      // ref.current?.rotation.x = -Math.PI / 2;
-      // console.log(ref.current.rotation);
-      // console.log(ref.current.quaternion);
-      // console.log(nodes);
-      // console.log(materials);
-      // console.log(animations);
-    }
-    // if (group.current !== null) {
-    //   // console.log(group.current.rotation.set(0, 0, 0));
-    //   console.log(group.current.quaternion);
-    //   console.log(group.current.rotation);
-    // }
-    // if (ref2.current !== null) {
-    //   console.log(ref2.current.quaternion);
-    //   console.log(ref2.current.rotation);
-    // }
-    // console.log(group.current.rotation.set(0, 0, 0));
   });
 
   return (
     <mesh ref={ref as any}>
-      {/* <mesh> */}
-      <group ref={group as any} position={[0, 0, 0]} dispose={null}>
+      <group ref={group as any} position={[0, 0, 0]} dispose={null}></group>
+      {/* <group ref={group as any} position={[0, 0, 0]} dispose={null}>
         <group name="Scene">
           <group
-            // ref={ref2}
             name="Character"
             position={[0, -0.5, 0]}
             rotation={[-Math.PI / 2, 0, 0]}
@@ -217,7 +160,7 @@ const Player = () => {
             />
           </group>
         </group>
-      </group>
+      </group> */}
     </mesh>
   );
 };

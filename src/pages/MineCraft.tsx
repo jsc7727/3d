@@ -13,7 +13,7 @@ import Player2 from "../components/MineCraft/Player2";
 function MineCraft() {
   return (
     <>
-      <Canvas>
+      <Canvas camera={{ fov: 75 }}>
         <Sky sunPosition={[100, 100, 20]} />
         <ambientLight intensity={0.5} />
         <FPV />
