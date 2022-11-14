@@ -137,7 +137,7 @@ const Player = () => {
   return (
     <mesh ref={ref as any}>
       <group ref={group as any} position={[0, 0, 0]} dispose={null}></group>
-      {/* <group ref={group as any} position={[0, 0, 0]} dispose={null}>
+      <group ref={group as any} position={[0, 0, 0]} dispose={null}>
         <group name="Scene">
           <group
             name="Character"
@@ -160,7 +160,7 @@ const Player = () => {
             />
           </group>
         </group>
-      </group> */}
+      </group>
     </mesh>
   );
 };
