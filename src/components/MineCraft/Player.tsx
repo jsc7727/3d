@@ -27,17 +27,34 @@ const Player = () => {
     position: [0, 10, 0],
   }));
 
-  const vel = useRef([0, 0, 0]);
+  const ref2 = useRef<any>();
 
   // vel 을 구독해서 vel 값이 바뀌면 솔저랑 매칭됨.
+  const vel = useRef([0, 0, 0]);
   useEffect(() => {
-    api.velocity.subscribe((v) => (vel.current = v));
+    api.velocity.subscribe((v) => {
+      console.log(v);
+      return (vel.current = [0, v[1], 0]);
+    });
   }, [api.velocity]);
 
   const pos = useRef([0, 0, 0]);
   useEffect(() => {
     api.position.subscribe((p) => (pos.current = p));
   }, [api.position]);
+
+  // const qua = useRef([0, 0, 0]);
+  // useEffect(() => {
+  //   api.quaternion.subscribe((q) => (qua.current = q));
+  // }, [api.quaternion]);
+
+  // const rot = useRef([0, 0, 0]);
+  // useEffect(() => {
+  //   api.rotation.subscribe((r) => {
+  //     console.log("rotation", r);
+  //     return (rot.current = [0, 0, 0]);
+  //   });
+  // }, [api.rotation]);
 
   const rotateQuaternion = useRef(new Quaternion());
   const rotateAngle = useRef(new Vector3(0, 1, 0));
@@ -147,18 +164,39 @@ const Player = () => {
     // );
     solderAnimation();
     // group.current.quaternion.rotateTowards(rotateQuaternion.current, 0);
-    group.current.rotation.set(0, camera.rotation.z, 0);
+    // group.current.rotation.set(0, camera.rotation.z, 0);
 
     if (jump && Math.abs(vel.current[1]) < 0.05) {
       api.velocity.set(vel.current[0], JUMP_FORCE, vel.current[2]);
     }
+    // ref.rotation.x = -Math.PI / 2;
+    if (ref.current !== null) {
+      // ref.current?.rotation.x = -Math.PI / 2;
+      // console.log(ref.current.rotation);
+      // console.log(ref.current.quaternion);
+      // console.log(nodes);
+      // console.log(materials);
+      // console.log(animations);
+    }
+    // if (group.current !== null) {
+    //   // console.log(group.current.rotation.set(0, 0, 0));
+    //   console.log(group.current.quaternion);
+    //   console.log(group.current.rotation);
+    // }
+    // if (ref2.current !== null) {
+    //   console.log(ref2.current.quaternion);
+    //   console.log(ref2.current.rotation);
+    // }
+    // console.log(group.current.rotation.set(0, 0, 0));
   });
 
   return (
     <mesh ref={ref as any}>
+      {/* <mesh> */}
       <group ref={group as any} position={[0, 0, 0]} dispose={null}>
         <group name="Scene">
           <group
+            // ref={ref2}
             name="Character"
             position={[0, -0.5, 0]}
             rotation={[-Math.PI / 2, 0, 0]}
