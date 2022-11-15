@@ -123,6 +123,7 @@ const Player = () => {
     api.velocity.set(direction.x, vel.current[1], direction.z);
     solderAnimation();
 
+    // 캐릭터 카메라 보는 방향으로 회전
     group.current.rotation.set(
       camera.rotation.x,
       camera.rotation.y,

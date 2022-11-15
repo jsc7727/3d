@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 
-const socket = io("http://localhost:4001");
+// const socket = io("http://localhost:4001");
 
 type useSocketProps = {
+  socket: Socket;
   roomId: string;
   eventType: string;
   callback?: () => void;
 };
 
-const useSocket = <T>({ roomId, eventType, callback }: useSocketProps) => {
+const useSocket = <T>({
+  roomId,
+  eventType,
+  socket,
+  callback,
+}: useSocketProps) => {
   const [state, setState] = useState<T[]>([]);
   useEffect(() => {
     socket.emit("join Room", { roomId });

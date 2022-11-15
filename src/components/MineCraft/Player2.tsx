@@ -2,6 +2,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import { Vector3 } from "three";
+import Model from "./Model";
 
 const socket = io("http://localhost:4001");
 
@@ -35,10 +36,13 @@ const Player2 = () => {
   });
 
   return (
-    <mesh ref={meshRef} position={[0, 0, 0]}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={"orange"} />
-    </mesh>
+    <>
+      <mesh ref={meshRef} position={[0, 0, 0]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial color={"orange"} />
+      </mesh>
+      <Model position={[0, 0, 0]}></Model>
+    </>
   );
 };
 export default Player2;

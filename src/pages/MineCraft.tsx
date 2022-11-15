@@ -9,8 +9,23 @@ import Cubes from "./../components/MineCraft/Cubes";
 import TextureSelector from "./../components/MineCraft/TextureSelector";
 import Menu from "./../components/MineCraft/Menu";
 import Player2 from "../components/MineCraft/Player2";
+import useSocket from "../hooks/useSocket";
+import io, { Socket } from "socket.io-client";
+import { useEffect } from "react";
 
 function MineCraft() {
+  const socket = io("http://localhost:4001");
+  const { state } = useSocket<[number, number, number]>({
+    roomId: "default",
+    eventType: "position",
+    socket,
+  });
+  useEffect(() => {
+    console.log("open position", state);
+    return () => {
+      socket.removeAllListeners();
+    };
+  }, [state]);
   return (
     <>
       <Canvas camera={{ fov: 75 }}>
