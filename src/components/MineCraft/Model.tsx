@@ -1,10 +1,11 @@
 import * as THREE from "three";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 
 import RobotExpressive from "./../../model/RobotExpressive.glb";
 import { AnimationClip } from "three";
+import { useSphere } from "@react-three/cannon";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -55,19 +56,38 @@ type ActionName =
   | "blendMode"
   | "duration";
 
-export default function Model(props: JSX.IntrinsicElements["group"]) {
-  const group = useRef<THREE.Group>(null);
+type test = JSX.IntrinsicElements["group"];
+
+export default function Model(props: any) {
+  const { meshRef, ...etc } = props;
+  // const group = useRef<THREE.Group>(null);
   const { nodes, materials, animations } = useGLTF(
     RobotExpressive
   ) as unknown as GLTFResult;
-  const { actions } = useAnimations<AnimationClip>(animations, group);
+
+  const { actions } = useAnimations<AnimationClip>(animations, meshRef);
+
+  const [ref, api] = useSphere(() => ({
+    mass: 1,
+    type: "Dynamic",
+    position: [0, 2, 0],
+    fixedRotation: true,
+  }));
+
+  //   const pos = useRef([0, 0, 0]);
+  // useEffect(() => {
+  //   api.position.subscribe((p) => {
+  //     return (posRef.current = p);
+  //   });
+  // }, [api.position]);
+
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={meshRef} {...etc} dispose={null}>
       <group name="Root_Scene">
         <group name="RootNode">
           <group
             name="RobotArmature"
-            rotation={[-Math.PI / 2, 0, 0]}
+            rotation={[-Math.PI / 2, 0, Math.PI]}
             scale={30}
           >
             <primitive object={nodes.Bone} />
@@ -75,7 +95,7 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
           <group
             name="HandR"
             position={[0, 2.37, -0.02]}
-            rotation={[-Math.PI / 2, 0, 0]}
+            rotation={[-Math.PI / 2, 0, Math.PI]}
             scale={30}
           >
             <skinnedMesh
@@ -94,7 +114,7 @@ export default function Model(props: JSX.IntrinsicElements["group"]) {
           <group
             name="HandL"
             position={[0, 2.37, -0.02]}
-            rotation={[-Math.PI / 2, 0, 0]}
+            rotation={[-Math.PI / 2, 0, Math.PI]}
             scale={30}
           >
             <skinnedMesh

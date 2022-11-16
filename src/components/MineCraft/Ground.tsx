@@ -9,7 +9,7 @@ const Ground = () => {
   }));
   const [addCube] = useStore((state: any) => [state.addCube]);
 
-  textures.groundTexture.repeat.set(100, 100);
+  textures.groundTexture.repeat.set(1000, 1000);
 
   return (
     <mesh
@@ -20,7 +20,7 @@ const Ground = () => {
       }}
       ref={ref as any}
     >
-      <planeBufferGeometry attach="geometry" args={[100, 100]} />
+      <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
       <meshStandardMaterial attach="material" map={textures.groundTexture} />
     </mesh>
   );

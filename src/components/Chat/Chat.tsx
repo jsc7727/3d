@@ -13,7 +13,6 @@ function Chat() {
   useEffect(() => {
     socket.emit("join Room", { roomId: room });
     socket.on("message", ({ name, message }: messageType) => {
-      console.log("message", name, message);
       setChat((prev) => [...prev, { name, message }]);
     });
     return () => {
@@ -46,7 +45,6 @@ function Chat() {
 
   const selectRoom = async (roomId: string) => {
     // socket.emit('disconnect Room', { roomId: room });
-    console.log("asdf");
     socket.emit("join Room", { roomId });
     setChat([...chat, { name: "관리자", message: `${roomId} 로 방이 바뀜` }]);
     setRoom(roomId);

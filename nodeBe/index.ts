@@ -11,7 +11,7 @@ const io = require("socket.io")(server, {
 
 type messageType = { name: string; message: string };
 
-type positionType = { position: [number, number, number] };
+type positionType = { position: [number, number, number]; rotation: any };
 
 io.on("connection", (socket) => {
   socket.on("join Room", async ({ roomId }: { roomId: string }) => {
@@ -33,9 +33,11 @@ io.on("connection", (socket) => {
     io.to(Array.from(socket.rooms)[1]).emit("message", { name, message });
   });
 
-  socket.on("position", ({ position }: positionType) => {
+  socket.on("position", ({ position, rotation }: positionType) => {
     // 받은 roomId로 이름과 메시지를 전송
-    socket.to(Array.from(socket.rooms)[1]).emit("position", { position });
+    socket
+      .to(Array.from(socket.rooms)[1])
+      .emit("position", { position, rotation });
   });
 
   socket.on("disconnect", () => {

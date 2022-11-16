@@ -12,20 +12,21 @@ import Player2 from "../components/MineCraft/Player2";
 import useSocket from "../hooks/useSocket";
 import io, { Socket } from "socket.io-client";
 import { useEffect } from "react";
+import useModel from "../hooks/useModel";
+import useAnotherPlayer from "../hooks/useAnotherPlayer";
+
+function Inner() {
+  const player = useModel();
+  const anotherPlayer = useAnotherPlayer(player);
+  return (
+    <>
+      <Player {...player} />
+      <Player2 {...anotherPlayer} />
+    </>
+  );
+}
 
 function MineCraft() {
-  const socket = io("http://localhost:4001");
-  const { state } = useSocket<[number, number, number]>({
-    roomId: "default",
-    eventType: "position",
-    socket,
-  });
-  useEffect(() => {
-    console.log("open position", state);
-    return () => {
-      socket.removeAllListeners();
-    };
-  }, [state]);
   return (
     <>
       <Canvas camera={{ fov: 75 }}>
@@ -33,15 +34,13 @@ function MineCraft() {
         <ambientLight intensity={0.5} />
         <FPV />
         <Physics>
-          {/* <Player2 /> */}
-          <Player />
-          <Player2 />
+          <Inner></Inner>
           <Cubes />
           <Ground />
         </Physics>
       </Canvas>
       <div className="absolute centered cursor">+</div>
-      <TextureSelector />
+      {/* <TextureSelector /> */}
       <Menu />
     </>
   );
