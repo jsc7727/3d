@@ -19,7 +19,6 @@ const useSocket = <T>({
   const [state, setState] = useState<T[]>([]);
   useEffect(() => {
     socket.emit("join Room", { roomId });
-    console.log("?????");
     socket.on(eventType, (el: T) => {
       setState((prev) => [...prev, el]);
     });

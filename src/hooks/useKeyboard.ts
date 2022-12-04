@@ -12,6 +12,7 @@ function actionByKey(key: string) {
     Digit3: "glass",
     Digit4: "wood",
     Digit5: "log",
+    KeyF: "personView",
   };
   return keyActionMap[key];
 }
@@ -28,29 +29,34 @@ export const useKeyboard = () => {
     glass: false,
     wood: false,
     log: false,
+    personView: false,
   });
 
   const handleKeyDown = useCallback((e: any) => {
-    const action = actionByKey(e.code);
-    if (action) {
-      setActions((prev) => {
-        return {
-          ...prev,
-          [action]: true,
-        };
-      });
+    if (e.target.tagName === "BODY") {
+      const action = actionByKey(e.code);
+      if (action) {
+        setActions((prev) => {
+          return {
+            ...prev,
+            [action]: true,
+          };
+        });
+      }
     }
   }, []);
 
   const handleKeyUp = useCallback((e: any) => {
-    const action = actionByKey(e.code);
-    if (action) {
-      setActions((prev) => {
-        return {
-          ...prev,
-          [action]: false,
-        };
-      });
+    if (e.target.tagName === "BODY") {
+      const action = actionByKey(e.code);
+      if (action) {
+        setActions((prev) => {
+          return {
+            ...prev,
+            [action]: false,
+          };
+        });
+      }
     }
   }, []);
 
@@ -61,6 +67,12 @@ export const useKeyboard = () => {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
     };
+    // document.addEventListener("keydown", handleKeyDown);
+    // document.addEventListener("keyup", handleKeyUp);
+    // return () => {
+    //   document.removeEventListener("keydown", handleKeyDown);
+    //   document.removeEventListener("keyup", handleKeyUp);
+    // };
   }, [handleKeyDown, handleKeyUp]);
 
   return actions;

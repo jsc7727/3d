@@ -1,3 +1,4 @@
+import { useStore } from "./useStore";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useSphere } from "@react-three/cannon";
 import { useEffect, useRef } from "react";
@@ -13,6 +14,8 @@ const useModel = () => {
   const { moveBackward, moveForward, moveRight, moveLeft, jump } =
     useKeyboard();
 
+  const [activePersonView] = useStore((state: any) => [state.personView]);
+
   const { camera } = useThree();
 
   const group = useRef<any>();
@@ -23,7 +26,7 @@ const useModel = () => {
   const [mesh, api] = useSphere(() => ({
     mass: 1,
     type: "Dynamic",
-    position: [0, 0, 0],
+    position: [0, 1, 0],
     // https://pmndrs.github.io/cannon-es/docs/classes/Body.html#fixedRotation
     // 이게 있으면 rotation을 건드리지 않음
     fixedRotation: true,
@@ -44,6 +47,13 @@ const useModel = () => {
       return (pos.current = p);
     });
   }, [api.position]);
+
+  const rot = useRef([...[0, 0, 0]]);
+  useEffect(() => {
+    api.rotation.subscribe((v) => {
+      return (rot.current = v);
+    });
+  }, [api.rotation]);
 
   const solderAnimation = () => {
     let currentAction: AnimationAction | null = null;
@@ -80,19 +90,22 @@ const useModel = () => {
       toAction.reset().fadeIn(0.2).play();
       current.current = play;
     }
-
-    if (current.current === "Walk") {
-    }
   };
 
   const CameraPosition = () => {
-    const cameraPositionToBehind = new Vector3(0, -4, -10).applyEuler(
-      camera.rotation
-    );
-    const newCameraPosition = new Vector3(...pos.current).sub(
-      cameraPositionToBehind
-    );
-    camera.position.copy(newCameraPosition);
+    if (activePersonView === "firstPersonView") {
+      const cameraPositionToBehind = new Vector3(0, -4, -10).applyEuler(
+        camera.rotation
+      );
+      const newCameraPosition = new Vector3(...pos.current).sub(
+        cameraPositionToBehind
+      );
+      camera.position.copy(newCameraPosition);
+    } else if (activePersonView === "thirdPersonView") {
+      camera.position.copy(
+        new Vector3(pos.current[0], pos.current[1] + 2, pos.current[2])
+      );
+    }
   };
 
   const moveCharacter = () => {
@@ -115,26 +128,22 @@ const useModel = () => {
       .normalize() // 1로
       .multiplyScalar(SPEED) // 속도만큼 스칼라 증가
       .applyEuler(camera.rotation); // 카메라가 보는 방향으로 방향 설정 => 스칼라를 벡터로 만듬
-
     api.velocity.set(direction.x, vel.current[1], direction.z);
 
     if (jump && Math.abs(vel.current[1]) < 0.05) {
       api.velocity.set(vel.current[0], JUMP_FORCE, vel.current[2]);
     }
 
-    // 캐릭터 카메라 보는 방향으로 회전
-    // console.log(camera.rotation);
     group.current.rotation.set(
       camera.rotation.x,
       camera.rotation.y,
       camera.rotation.z
     );
-    // group.current.rotation.set(0, camera.rotation.y, 0);
   };
 
   useFrame(() => {
-    CameraPosition();
     moveCharacter();
+    CameraPosition();
     solderAnimation();
   });
 

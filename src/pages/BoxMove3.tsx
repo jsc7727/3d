@@ -58,7 +58,7 @@ const Box = () => {
     myMesh.current.position.y += jumpSpeed.current * delta;
     if (canJump.current === false) {
       jumpSpeed.current -= (defaultJumpSpeed + (9.8 / 2) * delta) * delta;
-      console.log(jumpSpeed);
+      // console.log(jumpSpeed);
       if (myMesh.current.position.y <= 1) {
         jumpSpeed.current = 0;
         canJump.current = true;
