@@ -16,7 +16,7 @@ import { io } from "socket.io-client";
 import { useEffect } from "react";
 import Model from "../components/MineCraft/Model";
 
-const socket = io("http://localhost:4002");
+const socket = io("http://krkorea.iptime.org:4001");
 
 function Inner() {
   const player = useModel();
@@ -28,10 +28,10 @@ function Inner() {
     <>
       <Player {...player} />
       {userList.map((userId: string) => {
-        return <Player2 userId={userId} {...anotherPlayer}></Player2>;
+        return (
+          <Player2 key={userId} userId={userId} {...anotherPlayer}></Player2>
+        );
       })}
-
-      {/* <Player2 {...anotherPlayer} /> */}
     </>
   );
 }

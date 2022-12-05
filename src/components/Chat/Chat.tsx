@@ -14,14 +14,10 @@ function Chat({ socket }: any) {
       setChat((prev) => [...prev, { name, message }]);
     });
 
-    socket.on("disconnectUser", ({ name }: any) => {
-      console.log(name);
-    });
     return () => {
-      socket.emit("disconnectUser");
       socket.removeAllListeners();
     };
-  }, []);
+  }, [room]);
 
   const onTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -47,6 +43,7 @@ function Chat({ socket }: any) {
   };
 
   const selectRoom = async (roomId: string) => {
+    await socket.emit("changeRoom");
     socket.emit("join Room", { roomId });
     setChat([...chat, { name: "관리자", message: `${roomId} 로 방이 바뀜` }]);
     setRoom(roomId);

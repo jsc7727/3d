@@ -11,7 +11,7 @@ export const useStore = create((set) => ({
   personView: "firstPersonView",
   room: "default",
   roomList: [],
-  users: {},
+  userList: [],
   texture: "dirt",
   cubes: getLocalStorage("cubes") || [],
   addCube: (x: number, y: number, z: number) => {
@@ -69,16 +69,22 @@ export const useStore = create((set) => ({
       return { roomList };
     });
   },
-  setUsers: (userList: string[]) => {
-    set((prev: any) => {
-      const newUsers = { ...prev.users };
-      userList.forEach((userId) => {
-        if (!(userId in newUsers)) {
-          newUsers[userId] = useRef(null);
-        }
-      });
-      console.log("newUsers", newUsers);
-      return { users: newUsers };
+  setUserList: (userList: string[]) => {
+    set(() => {
+      return { userList };
     });
+  },
+  addUserList: (userId: string) => {
+    set((prev: any) => {
+      return { userList: [...prev.userList, userId] };
+    });
+  },
+  setDisconnectUserList: (userId: string) => {
+    set((prev: any) => {
+      return { userList: prev.userList.filter((v: string) => v !== userId) };
+    });
+  },
+  clearUserList: () => {
+    set(() => ({ userList: [] }));
   },
 }));

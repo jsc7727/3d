@@ -102,9 +102,13 @@ const useModel = () => {
       );
       camera.position.copy(newCameraPosition);
     } else if (activePersonView === "thirdPersonView") {
-      camera.position.copy(
-        new Vector3(pos.current[0], pos.current[1] + 2, pos.current[2])
+      const cameraPositionToBehind = new Vector3(0, -2, 0).applyEuler(
+        camera.rotation
       );
+      const newCameraPosition = new Vector3(...pos.current).sub(
+        cameraPositionToBehind
+      );
+      camera.position.copy(newCameraPosition);
     }
   };
 
